@@ -1,0 +1,189 @@
+<html lang="en" data-bs-theme="dark">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Statistics</title>
+    <script src="./static/jquery-3.6.1.min.js"></script>
+    <script src="./static/highcharts/code/highcharts.js"></script>
+    <script src="./static/highcharts/code/modules/series-label.js"></script>
+    <script src="./static/highcharts/code/modules/exporting.js"></script>
+    <script src="./static/highcharts/code/modules/export-data.js"></script>
+    <script src="./static/highcharts/code/modules/accessibility.js"></script>
+    <script src="./static/highcharts/code/modules/broken-axis.js"></script>
+    <link rel='stylesheet' type='text/css' href="./static/bootstrap/css/bootstrap.css" />
+    <link rel='stylesheet' type='text/css' href="./static/bootstrap/css/bootstrap-utilities.css" />
+</head>
+
+<body>
+    <figure class="highcharts-figure">
+        <div id="signal-chart"></div>
+    </figure>
+    <div class="row">
+        <figure class="highcharts-figure col">
+            <div id="scatter-chart0" style="width: 450px; height: 500px"></div>
+        </figure>
+        <figure class="highcharts-figure col">
+            <div id="scatter-chart1" style="width: 450px; height: 500px"></div>
+        </figure>
+        <figure class="highcharts-figure col">
+            <div id="scatter-chart2" style="width: 450px; height: 500px"></div>
+        </figure>
+        <figure class="highcharts-figure col">
+            <div id="scatter-chart3" style="width: 450px; height: 500px"></div>
+        </figure>
+    </div>
+    <figure class="highcharts-figure">
+        <div id="freq-chart"></div>
+    </figure>
+    <figure class="highcharts-figure">
+        <div id="signal-chart2"></div>
+    </figure>
+    
+    
+    <script>
+        const signalChart = Highcharts.chart("signal-chart", {
+            chart: { type: 'spline' },
+            yAxis: { title: { text: '' }},
+            xAxis: { title: { text: '' }, min: 0.0 },
+            title: { text: 'f(t)' },
+            legend: { enabled: false },
+            series: [0, 0],
+            plotOptions: { series: { lineWidth: 0.5 } }
+        });
+        const freqChart = Highcharts.chart("freq-chart", {
+            title: { text: ""} ,
+            chart: { type: 'line' },
+            yAxis: { title: { text: '' }},
+            xAxis: { visible: true },
+        });
+        const scatterChart0 = Highcharts.chart("scatter-chart0", {
+            chart: { type: 'line' },
+            yAxis: { title: { text: '' }, min: -5, max: 5 },
+            xAxis: { title: { text: '' }, min: -5, max: 5 },
+            title: { text: 'complex 5Hz' },
+            legend: { enabled: false },
+            series: [0, 0],
+            plotOptions: { series: { lineWidth: 0.5 } }
+        });
+        const scatterChart1 = Highcharts.chart("scatter-chart1", {
+            chart: { type: 'line' },
+            yAxis: { title: { text: '' }, min: -5, max: 5 },
+            xAxis: { title: { text: '' }, min: -5, max: 5 },
+            title: { text: 'complex 10Hz' },
+            legend: { enabled: false },
+            series: [0, 0],
+            plotOptions: { series: { lineWidth: 0.5 } }
+        });
+        const scatterChart2 = Highcharts.chart("scatter-chart2", {
+            chart: { type: 'line' },
+            yAxis: { title: { text: '' }, min: -5, max: 5 },
+            xAxis: { title: { text: '' }, min: -5, max: 5 },
+            title: { text: 'complex 20Hz' },
+            legend: { enabled: false },
+            series: [0, 0],
+            plotOptions: { series: { lineWidth: 0.5 } }
+        }); 
+        const scatterChart3 = Highcharts.chart("scatter-chart3", {
+            chart: { type: 'line' },
+            yAxis: { title: { text: '' }, min: -5, max: 5 },
+            xAxis: { title: { text: '' }, min: -5, max: 5 },
+            title: { text: 'complex 300Hz' },
+            legend: { enabled: false },
+            series: [0, 0],
+            plotOptions: { series: { lineWidth: 0.5 } }
+        });
+
+
+        function dft(signal, freq) {
+            let surface = []
+            let acc_x = 0
+            let acc_y = 0
+            for (let t = 0; t < signal.length; t++) { 
+                angle = 2 * Math.PI * freq * (t / signal.length)
+                x = signal[t] * Math.cos(angle)
+                y = -signal[t] * Math.sin(angle)
+                surface.push([x, y])
+                acc_x += x
+                acc_y += y
+            }
+            acc_x /= signal.length
+            acc_y /= signal.length
+            
+            amplitude = 2 * Math.sqrt(acc_x * acc_x + acc_y * acc_y)
+            return [amplitude, acc_x, acc_y, surface]
+        }
+        function idft(spectrum, length) {
+            let s = []
+            for (let t = 0; t < length; t++) {
+                let acc = 0
+                for (let freq = 0; freq < spectrum.length; freq++) {
+                    angle = 2 * Math.PI * freq * (t / length)
+                    acc += spectrum[freq][0] * Math.cos(angle) - spectrum[freq][1] * Math.sin(angle)
+                }
+                s.push(2 * acc)
+            }
+            return s
+        }
+
+        function sig(a, freq, phase, t) {
+            // A*cos(ωt + φ)
+            // где A - амплитуда, ω - частота, а φ - фаза
+            return a * Math.cos(2 * Math.PI * freq * t + phase) + 0.0;
+        }
+        function func1(t) {
+            return sig(1.0, 1, 0, t) + sig(2.0, 5, Math.PI / 4, t) + sig(1.0, 10, Math.PI / 4, t) + sig(1.0, 20, 0, t);
+        }
+        
+        // Make signal
+        let signal = []
+        for (let t = 0; t < 1; t += 0.0001) {
+            signal.push(func1(t))
+        }
+        signalChart.addSeries({name: "", data: signal})
+
+        // Calc
+        let spectrum = []
+        let harmonic = []
+        const sample_rate = 1000
+        for (let freq = 0; freq <= sample_rate / 2; freq++) {
+            const [amplitude, acc_x, acc_y, surface] = dft(signal, freq)
+
+            spectrum.push([acc_x, acc_y])
+            harmonic.push([freq, amplitude])
+
+            if (freq == 5) {
+                scatterChart0.addSeries({name: "", data: surface})
+                scatterChart0.addSeries({name: "", data: [[0, 0], [acc_x, acc_y]] })
+            } else if (freq == 10) {
+                scatterChart1.addSeries({name: "", data: surface})
+                scatterChart1.addSeries({name: "", data: [[0, 0], [acc_x, acc_y]] })
+            } else if (freq == 20) {
+                scatterChart2.addSeries({name: "", data: surface})
+                scatterChart2.addSeries({name: "", data: [[0, 0], [acc_x, acc_y]] })
+            } else if (freq == 300) {
+                scatterChart3.addSeries({name: "", data: surface})
+                scatterChart3.addSeries({name: "", data: [[0, 0], [acc_x, acc_y]] })
+            }
+        }
+        freqChart.addSeries({ name: "", data: harmonic});
+
+
+        spectrum[5] = [0, 0]
+
+
+
+        const signalChart2 = Highcharts.chart("signal-chart2", {
+            chart: { type: 'spline' },
+            yAxis: { title: { text: '' }},
+            xAxis: { title: { text: '' }, min: 0.0 },
+            title: { text: 'f(t)' },
+            legend: { enabled: false },
+            series: [0, 0],
+            plotOptions: { series: { lineWidth: 0.5 } }
+        });
+        signalChart2.addSeries({ name: "", data: idft(spectrum, 10000)});
+        
+    </script>
+</body>
+</html>

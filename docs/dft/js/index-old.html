@@ -1,0 +1,166 @@
+<html lang="en" data-bs-theme="dark">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Statistics</title>
+    <script src="./static/jquery-3.6.1.min.js"></script>
+    <script src="./static/highcharts/code/highcharts.js"></script>
+    <script src="./static/highcharts/code/modules/series-label.js"></script>
+    <script src="./static/highcharts/code/modules/exporting.js"></script>
+    <script src="./static/highcharts/code/modules/export-data.js"></script>
+    <script src="./static/highcharts/code/modules/accessibility.js"></script>
+    <script src="./static/highcharts/code/modules/broken-axis.js"></script>
+    <link rel='stylesheet' type='text/css' href="./static/bootstrap/css/bootstrap.css" />
+    <link rel='stylesheet' type='text/css' href="./static/bootstrap/css/bootstrap-utilities.css" />
+</head>
+
+<body>
+    <figure class="highcharts-figure">
+        <div id="signal-chart"></div>
+    </figure>
+    <div class="row">
+        <figure class="highcharts-figure col">
+            <div id="scatter-chart1" style="width: 350px; height: 400px"></div>
+        </figure>
+        <figure class="highcharts-figure col">
+            <div id="scatter-chart5" style="width: 350px; height: 400px"></div>
+        </figure>
+        <figure class="highcharts-figure col">
+            <div id="scatter-chart10" style="width: 350px; height: 400px"></div>
+        </figure>
+        <figure class="highcharts-figure col">
+            <div id="scatter-chart15" style="width: 350px; height: 400px"></div>
+        </figure>
+        <figure class="highcharts-figure col">
+            <div id="freq-chart"></div>
+        </figure>
+    </div>
+    
+    <script>
+        const signalChart = Highcharts.chart("signal-chart", {
+            chart: { type: 'scatter', height: "10%" },
+            yAxis: { title: { text: '' }, min: 0, max: 5 },
+            xAxis: { title: { text: '' }, min: 0.0, max: 1.0 },
+            title: { text: 'f(t)' },
+            legend: { enabled: false },
+            series: [0, 0],
+            plotOptions: { scatter: { marker: { radius: 1 } } }
+        });
+        const scatterChart1 = Highcharts.chart("scatter-chart1", {
+            chart: { type: 'scatter' },
+            yAxis: { title: { text: '' }, min: -5, max: 5 },
+            xAxis: { title: { text: '' }, min: -5, max: 5 },
+            title: { text: 'complex 1Hz' },
+            legend: { enabled: false },
+            series: [0, 0],
+            plotOptions: { scatter: { marker: { radius: 1 } } }
+        });
+        const scatterChart5 = Highcharts.chart("scatter-chart5", {
+            chart: { type: 'scatter' },
+            yAxis: { title: { text: '' }, min: -5, max: 5 },
+            xAxis: { title: { text: '' }, min: -5, max: 5 },
+            title: { text: 'complex 5Hz' },
+            legend: { enabled: false },
+            series: [0, 0],
+            plotOptions: { scatter: { marker: { radius: 1 } } }
+        });
+        const scatterChart10 = Highcharts.chart("scatter-chart10", {
+            chart: { type: 'scatter' },
+            yAxis: { title: { text: '' }, min: -5, max: 5 },
+            xAxis: { title: { text: '' }, min: -5, max: 5 },
+            title: { text: 'complex 10Hz' },
+            legend: { enabled: false },
+            series: [0, 0],
+            plotOptions: { scatter: { marker: { radius: 1 } } }
+        });
+        const scatterChart15 = Highcharts.chart("scatter-chart15", {
+            chart: { type: 'scatter' },
+            yAxis: { title: { text: '' }, min: -5, max: 5 },
+            xAxis: { title: { text: '' }, min: -5, max: 5 },
+            title: { text: 'complex 15Hz' },
+            legend: { enabled: false },
+            series: [0, 0],
+            plotOptions: { scatter: { marker: { radius: 1 } } }
+        });
+        const freqChart = Highcharts.chart("freq-chart", {
+            title: { text: ""} ,
+            chart: { type: 'column', zooming: { type: 'x' } },
+            yAxis: { title: { text: '' }},
+            xAxis: { visible: false },
+        });
+
+        let t = 0.0
+        let m1 = []
+        let m5 = []
+        let m10 = []
+        let m15 = []
+        let is_print = false;
+
+        setInterval(function () {
+            function func(t) {
+                // A*cos(ωt + φ)
+                // где A - амплитуда, ω - частота, а φ - фаза
+                const freq1 = 10.0
+                const a1 = 1.0
+                const s1 = a1 * Math.cos(2 * Math.PI * freq1 * t) + 1.0;
+
+                const freq2 = 5.0
+                const a2 = 1.0
+                const s2 = a2 * Math.cos(2 * Math.PI * freq2 * t) + 1.0;
+                return s1 + s2;
+            }
+
+            function calc_mass(m) {
+                let x = 0
+                let y = 0
+                m.forEach(v => { 
+                    x += v[0]; 
+                    y += v[1];
+                })
+                x /= m.length
+                y /= m.length
+                return Math.sqrt(x * x + y * y)
+            }
+
+            if (t > 1) {
+                if (!is_print) {
+                    console.log("result: ", calc_mass(m1), calc_mass(m5), calc_mass(m10), calc_mass(m15))
+                    freqChart.addSeries({ name: "1 Hz",  data: [calc_mass(m1)]  });
+                    freqChart.addSeries({ name: "5 Hz",  data: [calc_mass(m5)]  });
+                    freqChart.addSeries({ name: "10 Hz", data: [calc_mass(m10)] });
+                    freqChart.addSeries({ name: "15 Hz", data: [calc_mass(m15)] });
+
+                    is_print = true
+                }
+                return
+            }
+
+            const freq = 1.0;
+
+            const y = func(t)
+            const x1 = y * Math.cos(2 * Math.PI * 1 * t)
+            const y1 = -y * Math.sin(2 * Math.PI * 1 * t)
+            const x5 = y * Math.cos(2 * Math.PI * 5 * t)
+            const y5 = -y * Math.sin(2 * Math.PI * 5 * t)
+            const x10 = y * Math.cos(2 * Math.PI * 10 * t)
+            const y10 = -y * Math.sin(2 * Math.PI * 10 * t)
+            const x15 = y * Math.cos(2 * Math.PI * 15 * t)
+            const y15 = -y * Math.sin(2 * Math.PI * 15 * t)
+
+            m1.push([x1, y1])
+            m5.push([x5, y5])
+            m10.push([x10, y10])
+            m15.push([x15, y15])
+
+            signalChart.series[0].addPoint([t, y]);
+            scatterChart1.series[0].addPoint([x1, y1]);
+            scatterChart5.series[0].addPoint([x5, y5]);
+            scatterChart10.series[0].addPoint([x10, y10]);
+            scatterChart15.series[0].addPoint([x15, y15]);
+
+            t += 0.001
+        }, 1);
+    </script>
+</body>
+</html>
