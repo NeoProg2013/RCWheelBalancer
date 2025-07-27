@@ -1,0 +1,24 @@
+{
+  "configs": {
+    "${workspaceFolder}\\WheelBalancer.ewp": "Debug"
+  },
+  "project": {
+    "path": "${workspaceFolder}\\WheelBalancer.ewp"
+  },
+  "workbench": {
+    "path": "C:\\Program Files (x86)\\IAR Systems\\Embedded Workbench 8.1"
+  },
+  "workspace": {
+    "path": "${workspaceFolder}\\WheelBalancer.eww"
+  },
+  "workspaces": {
+    "${workspaceFolder}\\WheelBalancer.eww": {
+      "configs": {
+        "${workspaceFolder}\\WheelBalancer.ewp": "Debug"
+      },
+      "selected": {
+        "path": "${workspaceFolder}\\WheelBalancer.ewp"
+      }
+    }
+  }
+}
