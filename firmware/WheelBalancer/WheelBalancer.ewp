@@ -762,7 +762,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>D:\Projects\RCWheelBalancer\firmware\WheelBalancer\drivers\CMSIS\device\STM32F1xx\iar\linker\stm32f103x6_flash.icf</state>
+                    <state>$PROJ_DIR$\drivers\CMSIS\device\STM32F1xx\iar\linker\stm32f103x6_flash.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
