@@ -23,9 +23,9 @@
 
 if ($debugfile -eq "")
 {
-& "C:\Program Files\IAR Systems\Embedded Workbench 9.1\common\bin\cspybat" -f "C:\Users\NeoProg\Desktop\balancer\WheelBalancer\settings\WheelBalancer.Debug.general.xcl" --backend -f "C:\Users\NeoProg\Desktop\balancer\WheelBalancer\settings\WheelBalancer.Debug.driver.xcl" 
+& "C:\Program Files\IAR Systems\Embedded Workbench 9.1\common\bin\cspybat" -f "D:\Projects\RCWheelBalancer\firmware\WheelBalancer\settings\WheelBalancer.Debug.general.xcl" --backend -f "D:\Projects\RCWheelBalancer\firmware\WheelBalancer\settings\WheelBalancer.Debug.driver.xcl" 
 }
 else
 {
-& "C:\Program Files\IAR Systems\Embedded Workbench 9.1\common\bin\cspybat" -f "C:\Users\NeoProg\Desktop\balancer\WheelBalancer\settings\WheelBalancer.Debug.general.xcl" --debug_file=$debugfile --backend -f "C:\Users\NeoProg\Desktop\balancer\WheelBalancer\settings\WheelBalancer.Debug.driver.xcl" 
+& "C:\Program Files\IAR Systems\Embedded Workbench 9.1\common\bin\cspybat" -f "D:\Projects\RCWheelBalancer\firmware\WheelBalancer\settings\WheelBalancer.Debug.general.xcl" --debug_file=$debugfile --backend -f "D:\Projects\RCWheelBalancer\firmware\WheelBalancer\settings\WheelBalancer.Debug.driver.xcl" 
 }
