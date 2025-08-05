@@ -2710,12 +2710,6 @@
                 <name>$PROJ_DIR$\drivers\HAL\stm32f1xx_ll_wwdg.h</name>
             </file>
         </group>
-        <file>
-            <name>$PROJ_DIR$\drivers\systimer.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\drivers\systimer.h</name>
-        </file>
     </group>
     <group>
         <name>src</name>
