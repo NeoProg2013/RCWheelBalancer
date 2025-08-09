@@ -21,6 +21,17 @@ uint32_t get_pulse_count() {
 int32_t pwm = 0;
 uint32_t count = 0;
 
+
+// Delay 2 us (only for 72 MHz CPU)
+void delay_2us() {
+    // T = 1 / (72 000 000 / 1 000 000 000) = ~13.8 ns 
+    // Delay = 2000 ns / 13.8 ns = ~145 ticks
+    // 5 ticks by interation for this loop + 6 ticks for last iteration (ignore it)
+    // Count = 145 / 5 = 29
+    for (uint32_t i = 0; i < 29; ++i) asm("nop"); 
+}
+
+
 int main() {
     HAL_Init();
     system_clock_init();

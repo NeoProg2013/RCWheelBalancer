@@ -242,7 +242,7 @@
                 </option>
                 <option>
                     <name>CCListCFile</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCListCMnemonics</name>
@@ -250,11 +250,11 @@
                 </option>
                 <option>
                     <name>CCListCMessages</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCListAssFile</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCListAssSource</name>
@@ -2710,6 +2710,12 @@
                 <name>$PROJ_DIR$\drivers\HAL\stm32f1xx_ll_wwdg.h</name>
             </file>
         </group>
+        <file>
+            <name>$PROJ_DIR$\drivers\hx711.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\drivers\hx711.h</name>
+        </file>
     </group>
     <group>
         <name>src</name>
